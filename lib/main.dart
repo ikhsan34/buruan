@@ -5,6 +5,7 @@
 import 'package:buruan/login.dart';
 import 'package:flutter/material.dart';
 import 'package:buruan/register.dart';
+import 'package:buruan/dashboard.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     Login.tag: (context) => const Login(),
     Register.tag: (context) => const Register(),
+    Dashboard.tag: (context) => const Dashboard(),
   };
 
   @override
