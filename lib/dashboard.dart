@@ -1,7 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(new MaterialApp(home: new Dashboard()));
+  runApp(new MaterialApp(home: Dashboard()));
 }
 
 class Dashboard extends StatefulWidget {
@@ -16,26 +18,65 @@ class _DashboardState extends State<Dashboard> {
   String txt = '';
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        backgroundColor: Color(0xFF009688),
-        title: new Text("Buruan"),
-        leading: new Icon(Icons.menu),
-        /* actions: <Widget>[
-          new IconButton(
-              icon: new Icon(Icons.access_time),
-              onPressed: () {
-                txt = 'this is arrow button';
-              }),
-          new IconButton(
-              icon: new Icon(Icons.data_usage),
-              onPressed: () {
-                txt = 'this is arrow button';
-              })
-        ], */
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("BURUAN"),
+        backgroundColor: Color(0xFF9ED5C5),
       ),
-      body: new Center(
-        child: new Text(txt),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_sharp),
+        backgroundColor: Color(0xff009688),
+        foregroundColor: Color(0xffffffff),
+        onPressed: () => {},
+      ),
+      body: const Center(
+        child: Text('Dashboard'),
+      ),
+      drawer: Drawer(
+        backgroundColor: Color(0xFF9ED5C5),
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.all(8),
+          children: <Widget>[
+            Container(
+              height: 50.0,
+              margin: EdgeInsets.all(2),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Color(0xFFFFFFFF),
+                backgroundColor: Color(0xFF8EC3B0),
+              ),
+              onPressed: () {},
+              child: const Text('Profile'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Color(0xFFFFFFFF),
+                backgroundColor: Color(0xFF8EC3B0),
+              ),
+              onPressed: () {},
+              child: const Text('Group'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Color(0xFFFFFFFF),
+                backgroundColor: Color(0xFF8EC3B0),
+              ),
+              onPressed: () {},
+              child: const Text('History'),
+            ),
+            Divider(),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Color(0xFFFFFFFF),
+                backgroundColor: Color(0xFF8EC3B0),
+              ),
+              onPressed: () {},
+              child: const Text('Log Out'),
+            ),
+          ],
+        ),
       ),
     );
   }
