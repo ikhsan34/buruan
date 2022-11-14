@@ -1,5 +1,9 @@
+import 'package:buruan/Dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:buruan/Register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   static String tag = 'login-page';
@@ -10,13 +14,47 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool _isLoading = false;
+  final Future _prefs = SharedPreferences.getInstance();
+
+  login(String email, String password) async {
+    final SharedPreferences prefs = await _prefs;
+    Map data = {'email': email, 'password': password};
+    var jsonResponse;
+    var response =
+        await http.post(Uri.parse("http://localhost:8080/login"), body: data);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        prefs.setString("access_token", jsonResponse['access_token']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => Dashboard(),
+            ),
+            (route) => false);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.body);
+    }
+  }
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     const logo = Center(
-      child: Text("Buruan"),
+      child: Text("Buruan!"),
     );
 
     final email = TextFormField(
+      controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: InputDecoration(
@@ -31,6 +69,7 @@ class _LoginState extends State<Login> {
     );
 
     final password = TextFormField(
+      controller: passwordController,
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -48,9 +87,12 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
-        onPressed: () {
-          //Navigator.of(context).pushNamed(HomePage.tag);
-        },
+        onPressed: (() {
+          setState(() {
+            _isLoading = true;
+          });
+          login(emailController.text, passwordController.text);
+        }),
         child: const Text('Login'),
       ),
     );

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:buruan/Dashboard.dart';
 import 'package:buruan/login.dart';
 import 'package:flutter/material.dart';
 import 'package:buruan/register.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Buruan',
-      home: const Login(),
+      home: const Dashboard(),
       routes: routes,
     );
   }
