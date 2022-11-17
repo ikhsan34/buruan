@@ -44,12 +44,85 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF9ED5C5),
+        foregroundColor: Colors.white,
         title: const Text("Dashboard"),
       ),
-      body: ListView(
-        children: [
-          ElevatedButton(onPressed: logout, child: const Text("Logout"))
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            for(var i = 0; i <= 10; i++)...[
+              Card(
+              margin: EdgeInsets.all(10),
+              child: ListTile(
+                title: Text('Pengembangan Perangkat Lunak'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Tugas besar membuat aplikasi terdistribusi menggunakan API'),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Row(
+                      children: [
+                        Text('Subtitle 2'),
+                        Spacer(),
+                        Text('Kanan')
+                      ],
+                    ),
+                  ],
+                ),
+                // trailing: Text('Trailing'),
+                isThreeLine: true,
+              ),
+            ),
+            ]
+          ]
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF009688),
+        onPressed: (() {
+          
+        }),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: Container(
+                padding: EdgeInsets.all(10),
+                alignment: Alignment.bottomLeft,
+                child: Text('Nama Profile', style: TextStyle(color: Colors.white),),
+              ),
+              decoration: BoxDecoration(
+              color: Color(0xFF9ED5C5),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text('User Profile'),
+                  ),
+                  ListTile(
+                    title: Text('Group'),
+                  ),
+                  ListTile(
+                    title: Text('History'),
+                  ),
+                  ListTile(
+                    title: Text('Logout'),
+                    onTap: (() => logout()),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

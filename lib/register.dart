@@ -28,7 +28,7 @@ class _RegisterState extends State<Register> {
     };
     var jsonResponse;
     var response = await http.post(
-        Uri.parse("http://192.168.88.254:8080/register"),
+        Uri.parse("http://192.168.232.56:8080/register"),
         body: data); // localhost:8080
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
