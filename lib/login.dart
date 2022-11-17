@@ -21,8 +21,9 @@ class _LoginState extends State<Login> {
     final SharedPreferences prefs = await _prefs;
     Map data = {'email': email, 'password': password};
     var jsonResponse;
-    var response =
-        await http.post(Uri.parse("http://localhost:8080/login"), body: data);
+    var response = await http.post(
+        Uri.parse("http://192.168.88.254:8080/login"),
+        body: data); // localhost:8080
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
