@@ -1,6 +1,6 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
+import 'package:buruan/login.dart';
+import 'package:buruan/reminder.dart';
 
 void main() {
   runApp(new MaterialApp(home: Dashboard()));
@@ -27,16 +27,16 @@ class _DashboardState extends State<Dashboard> {
         child: Icon(Icons.add_sharp),
         backgroundColor: Color(0xff009688),
         foregroundColor: Color(0xffffffff),
-        onPressed: () => {},
+        onPressed: () => {Navigator.of(context).pushNamed(Reminder.tag)},
       ),
       body: const Center(
         child: Text('Dashboard'),
       ),
       drawer: Drawer(
         backgroundColor: Color(0xFF9ED5C5),
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.all(8),
+          // padding: EdgeInsets.all(8),
           children: <Widget>[
             Container(
               height: 50.0,
@@ -66,13 +66,20 @@ class _DashboardState extends State<Dashboard> {
               onPressed: () {},
               child: const Text('History'),
             ),
-            Divider(),
+            Expanded(
+              flex: 6,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+              ),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Color(0xFFFFFFFF),
                 backgroundColor: Color(0xFF8EC3B0),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(Login.tag);
+              },
               child: const Text('Log Out'),
             ),
           ],
