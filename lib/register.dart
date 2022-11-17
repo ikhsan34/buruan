@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:login/home_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'Dashboard.dart';
 
 class Register extends StatefulWidget {
   static String tag = 'login-page';
@@ -10,6 +15,47 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  bool _isLoading = false;
+  final Future _prefs = SharedPreferences.getInstance();
+
+  register(String name, String phone, String email, String password) async {
+    final SharedPreferences prefs = await _prefs;
+    Map data = {
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'password': password
+    };
+    var jsonResponse;
+    var response = await http.post(Uri.parse("http://localhost:8080/register"),
+        body: data);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        prefs.setString("access_token", jsonResponse['access_token']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => Dashboard(),
+            ),
+            (route) => false);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.body);
+    }
+  }
+
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordControler = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     const logo = Center(
@@ -17,6 +63,7 @@ class _RegisterState extends State<Register> {
     );
 
     final name = TextFormField(
+      controller: nameController,
       keyboardType: TextInputType.name,
       autofocus: false,
       decoration: InputDecoration(
@@ -31,6 +78,7 @@ class _RegisterState extends State<Register> {
     );
 
     final phone = TextFormField(
+      controller: phoneController,
       keyboardType: TextInputType.phone,
       autofocus: false,
       decoration: InputDecoration(
@@ -45,6 +93,7 @@ class _RegisterState extends State<Register> {
     );
 
     final email = TextFormField(
+      controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: InputDecoration(
@@ -59,6 +108,7 @@ class _RegisterState extends State<Register> {
     );
 
     final password = TextFormField(
+      controller: passwordController,
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -72,6 +122,7 @@ class _RegisterState extends State<Register> {
       ),
     );
     final confirmationPassword = TextFormField(
+      controller: confirmPasswordControler,
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -91,6 +142,11 @@ class _RegisterState extends State<Register> {
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
         onPressed: () {
           //Navigator.of(context).pushNamed(HomePage.tag);
+          setState(() {
+            _isLoading = true;
+          });
+          register(nameController.text, phoneController.text,
+              emailController.text, passwordController.text);
         },
         child: const Text('Register'),
       ),
