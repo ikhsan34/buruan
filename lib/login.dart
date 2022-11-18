@@ -22,7 +22,7 @@ class _LoginState extends State<Login> {
     Map data = {'email': email, 'password': password};
     var jsonResponse;
     var response = await http.post(
-        Uri.parse("http://192.168.232.56:8080/login"),
+        Uri.parse("http://192.168.88.254:8080/login"),
         body: data); // localhost:8080
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
@@ -31,6 +31,7 @@ class _LoginState extends State<Login> {
           _isLoading = false;
         });
         prefs.setString("access_token", jsonResponse['access_token']);
+        prefs.setString('user_id', jsonResponse['user']['id']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (context) => Dashboard(),

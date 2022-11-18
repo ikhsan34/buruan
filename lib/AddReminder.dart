@@ -1,42 +1,51 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:login/home_page.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:ffi';
 
-import 'Dashboard.dart';
+import 'package:buruan/Dashboard.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
-class Register extends StatefulWidget {
-  static String tag = 'login-page';
+class AddReminder extends StatefulWidget {
+  const AddReminder({super.key});
+  static String tag = 'AddReminder';
 
-  const Register({super.key});
   @override
-  _RegisterState createState() => _RegisterState();
+  State<AddReminder> createState() => _AddReminderState();
 }
 
-class _RegisterState extends State<Register> {
+class _AddReminderState extends State<AddReminder> {
   bool _isLoading = false;
+
   final Future _prefs = SharedPreferences.getInstance();
 
-  register(String name, String phone, String email, String password) async {
+  addReminder(String name, String desc, String deadline) async {
     final SharedPreferences prefs = await _prefs;
+
+    String token = 'Bearer ${prefs.getString('access_token')}';
+
+    Map<String, String> header = {'Authorization': token};
     Map data = {
+      'user_id': prefs.getString('user_id').toString(),
       'name': name,
-      'phone': phone,
-      'email': email,
-      'password': password
+      'desc': desc,
+      'deadline': deadline
     };
+
     var jsonResponse;
     var response = await http.post(
-        Uri.parse("http://192.168.88.254:8080/register"),
-        body: data); // localhost:8080
+        Uri.parse("http://192.168.88.254:8080/reminder"),
+        body: data,
+        headers: header); // localhost:8080
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
-        prefs.setString("access_token", jsonResponse['access_token']);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (context) => Dashboard(),
@@ -52,55 +61,19 @@ class _RegisterState extends State<Register> {
   }
 
   final nameController = TextEditingController();
-  final phoneController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordControler = TextEditingController();
+  final descController = TextEditingController();
+  final deadlineController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const logo = Center(
-      child: Text("Buruan"),
-    );
-
     final name = TextFormField(
       controller: nameController,
-      keyboardType: TextInputType.name,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'name',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final phone = TextFormField(
-      controller: phoneController,
-      keyboardType: TextInputType.phone,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'phone',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final email = TextFormField(
-      controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
-        hintText: 'Email',
+        hintText: 'Reminder Name',
         contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: const OutlineInputBorder(
@@ -108,28 +81,26 @@ class _RegisterState extends State<Register> {
       ),
     );
 
-    final password = TextFormField(
-      controller: passwordController,
+    final desc = TextFormField(
+      controller: descController,
       autofocus: false,
-      obscureText: true,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
-        hintText: 'Password',
+        hintText: 'Description',
         contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white)),
       ),
     );
-    final confirmationPassword = TextFormField(
-      controller: confirmPasswordControler,
+    final deadline = TextFormField(
+      controller: deadlineController,
       autofocus: false,
-      obscureText: true,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
-        hintText: 'Confirmation Password',
+        hintText: 'Deadline',
         contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: const OutlineInputBorder(
@@ -137,7 +108,7 @@ class _RegisterState extends State<Register> {
       ),
     );
 
-    final registerButton = Padding(
+    final submitButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
@@ -146,33 +117,37 @@ class _RegisterState extends State<Register> {
           setState(() {
             _isLoading = true;
           });
-          register(nameController.text, phoneController.text,
-              emailController.text, passwordController.text);
+          addReminder(nameController.text, descController.text,
+              deadlineController.text);
         },
-        child: const Text('Register'),
+        child: const Text('Submit'),
       ),
     );
-
     return Scaffold(
-      backgroundColor: const Color(0xFF9ED5C5),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF9ED5C5),
+        foregroundColor: Colors.white,
+        title: const Text('Add Reminder'),
+      ),
       body: Center(
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
-            logo,
+            Center(
+              child: Text(
+                'Add Reminder',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
             const SizedBox(height: 48.0),
             name,
             const SizedBox(height: 8.0),
-            phone,
+            desc,
             const SizedBox(height: 8.0),
-            email,
-            const SizedBox(height: 8.0),
-            password,
-            const SizedBox(height: 8.0),
-            confirmationPassword,
+            deadline,
             const SizedBox(height: 48),
-            registerButton,
+            submitButton,
           ],
         ),
       ),
