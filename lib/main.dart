@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:buruan/login.dart';
+import 'package:buruan/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:buruan/register.dart';
 import 'package:buruan/dashboard.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
     Register.tag: (context) => const Register(),
     Dashboard.tag: (context) => const Dashboard(),
     Reminder.tag: (context) => const Reminder(),
+    Profile.tag: (context) => const Profile(),
   };
 
   @override

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Reminder extends StatefulWidget {
-  static String tag = 'Reminder-page';
+class Profile extends StatefulWidget {
+  static String tag = 'Profile-page';
 
-  const Reminder({super.key});
+  const Profile({super.key});
   @override
-  _ReminderState createState() => _ReminderState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _ReminderState extends State<Reminder> {
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final nama = TextFormField(
@@ -17,6 +17,7 @@ class _ReminderState extends State<Reminder> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
+        hintText: 'Nama',
         contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: const OutlineInputBorder(
@@ -30,6 +31,7 @@ class _ReminderState extends State<Reminder> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
+        hintText: 'Email',
         contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: const OutlineInputBorder(
@@ -43,6 +45,7 @@ class _ReminderState extends State<Reminder> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
+        hintText: 'Nomor Telepon',
         contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         enabledBorder: const OutlineInputBorder(
@@ -50,7 +53,7 @@ class _ReminderState extends State<Reminder> {
       ),
     );
 
-    final ReminderButton = Padding(
+    final ProfileButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
@@ -61,7 +64,7 @@ class _ReminderState extends State<Reminder> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Reminder"),
+        title: Text("User Profile"),
         backgroundColor: Color(0xFF9ED5C5),
       ),
       backgroundColor: const Color(0xFFDEF5E5),
@@ -70,16 +73,13 @@ class _ReminderState extends State<Reminder> {
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
-            Text("Title"),
             nama,
-            const SizedBox(height: 10.0),
-            Text("Description"),
+            const SizedBox(height: 8.0),
             phone,
-            const SizedBox(height: 10.0),
-            Text("Deadline"),
+            const SizedBox(height: 8.0),
             email,
             const SizedBox(height: 48),
-            ReminderButton,
+            ProfileButton,
           ],
         ),
       ),
