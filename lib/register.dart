@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:login/home_page.dart';
 
 class Register extends StatefulWidget {
-  static String tag = 'login-page';
+  static String tag = 'register-page';
 
   const Register({super.key});
   @override
