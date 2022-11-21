@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:buruan/login.dart';
 import 'package:buruan/profile.dart';
 import 'package:buruan/reminder.dart';
+import 'package:buruan/reminderDetail.dart';
+import 'package:buruan/group.dart';
 
 void main() {
   runApp(new MaterialApp(home: Dashboard()));
@@ -34,7 +36,7 @@ class _DashboardState extends State<Dashboard> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
         onPressed: () {
-          // Navigator.of(context).pushNamed(Group.tag);
+          Navigator.of(context).pushNamed(Group.tag);
         },
         child: const Text('Group'),
       ),
@@ -63,8 +65,14 @@ class _DashboardState extends State<Dashboard> {
     );
 
     final reminderCard = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0),
-        child: Card(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: Card(
+        color: Color(0xFFDEF5E5),
+        child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          onTap: () {
+            Navigator.of(context).pushNamed(ReminderDetail.tag);
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -73,30 +81,26 @@ class _DashboardState extends State<Dashboard> {
                 title: Text('Name'),
                 subtitle: Text('Description'),
               ),
-              const SizedBox(width: 300, height: 30),
-              InkWell(splashColor: Colors.blue.withAlpha(30), onTap: () {}),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(
-                    'group name',
-                    style: TextStyle(
-                      color: Color(0xFF000000).withOpacity(0.5),
-                    ),
+                  TextButton(
+                    child: const Text('Group Name'),
+                    onPressed: () {/* ... */},
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'date',
-                    style: TextStyle(
-                      color: Color(0xFF000000).withOpacity(0.5),
-                    ),
+                  TextButton(
+                    child: const Text('Date'),
+                    onPressed: () {/* ... */},
                   ),
                   const SizedBox(width: 8),
                 ],
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -112,8 +116,10 @@ class _DashboardState extends State<Dashboard> {
       body: Center(
           child: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-        children: [reminderCard],
-      )),
+        children: <Widget>[reminderCard],
+      )
+          // child: Text("Hello World")
+          ),
       drawer: Drawer(
         backgroundColor: Color(0xFF9ED5C5),
         child: ListView(
