@@ -11,8 +11,8 @@ class Reminder extends StatefulWidget {
 class _ReminderState extends State<Reminder> {
   @override
   Widget build(BuildContext context) {
-    final nama = TextFormField(
-      keyboardType: TextInputType.name,
+    final title = TextFormField(
+      keyboardType: TextInputType.text,
       autofocus: false,
       decoration: InputDecoration(
         filled: true,
@@ -24,21 +24,26 @@ class _ReminderState extends State<Reminder> {
       ),
     );
 
-    final email = TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
+    final deadline = TextFormField(
+        keyboardType: TextInputType.datetime,
+        autofocus: false,
+        decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white)),
+            suffixIcon: Align(
+              widthFactor: 1.0,
+              heightFactor: 1.0,
+              child: Icon(
+                Icons.calendar_month_outlined,
+              ),
+            )));
 
-    final phone = TextFormField(
-      keyboardType: TextInputType.phone,
+    final description = TextFormField(
+      keyboardType: TextInputType.text,
       autofocus: false,
       decoration: InputDecoration(
         filled: true,
@@ -71,13 +76,13 @@ class _ReminderState extends State<Reminder> {
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
             Text("Title"),
-            nama,
+            title,
             const SizedBox(height: 10.0),
             Text("Description"),
-            phone,
+            description,
             const SizedBox(height: 10.0),
             Text("Deadline"),
-            email,
+            deadline,
             const SizedBox(height: 48),
             ReminderButton,
           ],
