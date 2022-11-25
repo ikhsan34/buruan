@@ -59,7 +59,32 @@ class _ReminderDetailState extends State<ReminderDetail> {
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFF4848)),
-        onPressed: () {},
+        onPressed: () => showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            content: const Text('Are you sure want to delete?'),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    side: BorderSide(
+                      color: Colors.black.withOpacity(0.2),
+                    ),
+                    backgroundColor: Colors.white),
+                onPressed: () => Navigator.pop(context, 'cancel'),
+                child: const Text(
+                  'cancel',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF009688)),
+                onPressed: () => Navigator.pop(context, 'ok'),
+                child: const Text('ok'),
+              ),
+            ],
+          ),
+        ),
         child: const Text('Delete'),
       ),
     );
