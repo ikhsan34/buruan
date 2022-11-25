@@ -4,6 +4,7 @@ import 'package:buruan/profile.dart';
 import 'package:buruan/reminder.dart';
 import 'package:buruan/reminderDetail.dart';
 import 'package:buruan/group.dart';
+import 'package:buruan/history.dart';
 
 void main() {
   runApp(new MaterialApp(home: Dashboard()));
@@ -47,7 +48,7 @@ class _DashboardState extends State<Dashboard> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
         onPressed: () {
-          // Navigator.of(context).pushNamed(History.tag);
+          Navigator.of(context).pushNamed(History.tag);
         },
         child: const Text('History'),
       ),
