@@ -1,3 +1,4 @@
+import 'package:buruan/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:buruan/Register.dart';
 
@@ -49,6 +50,7 @@ class _LoginState extends State<Login> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
         onPressed: () {
+          Navigator.of(context).pushNamed(Dashboard.tag);
           //Navigator.of(context).pushNamed(HomePage.tag);
         },
         child: const Text('Login'),
