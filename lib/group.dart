@@ -45,6 +45,7 @@ class _GroupState extends State<Group> {
           Container(
             margin: EdgeInsets.all(10),
             child: FloatingActionButton.extended(
+              heroTag: 'create-group',
               backgroundColor: Color(0xFF009688),
               onPressed: () {},
               label: const Text('Create Group'),
@@ -54,6 +55,7 @@ class _GroupState extends State<Group> {
           Container(
             margin: EdgeInsets.all(10),
             child: FloatingActionButton.extended(
+              heroTag: 'join-group',
               onPressed: () {},
               backgroundColor: Color(0xFF009688),
               label: const Text('Join Group'),
@@ -61,9 +63,7 @@ class _GroupState extends State<Group> {
           ), // button second
         ],
       ),
-      body: Center(
-        child: GroupCard,
-      ),
+      body: GroupCard,
     );
   }
 }

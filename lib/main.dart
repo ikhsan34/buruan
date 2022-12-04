@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Buruan',
-      home: const Login(),
+      home: const Dashboard(),
       routes: routes,
     );
   }

@@ -5,10 +5,11 @@ import 'package:buruan/reminder.dart';
 import 'package:buruan/reminderDetail.dart';
 import 'package:buruan/group.dart';
 import 'package:buruan/history.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-void main() {
-  runApp(new MaterialApp(home: Dashboard()));
-}
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
   static String tag = 'dashboard-page';
@@ -19,6 +20,93 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  // API
+  final api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
+  final Future _prefs = SharedPreferences.getInstance();
+
+  // User Data
+  Map user = {};
+  List _reminder = [];
+  bool isLoading = true;
+
+  Future<List> _getReminder() async {
+    final SharedPreferences prefs = await _prefs;
+    Map user = jsonDecode(prefs.getString('user') ?? '{}');
+
+    String token = 'Bearer ${prefs.getString('access_token')}';
+    Map<String, String> header = {'Authorization': token};
+
+    // Get reminder by user id
+    var response = await http.get(Uri.parse("$api/reminder/user/${user['id']}"), headers: header);
+    var reminderByUser = jsonDecode(response.body);
+
+    // Get user membership
+    response = await http.get(Uri.parse("$api/group/user/${user['id']}"), headers: header);
+    var listUserGroup = jsonDecode(response.body);
+
+    // Get reminder by group id
+    List reminderGroup = [];
+    for (var item in listUserGroup['group']) {
+      // Get reminders
+      response = await http.get(Uri.parse("$api/reminder/group/${item['group_id']}"), headers: header);
+      var reminderByGroup = jsonDecode(response.body);
+
+      // Set reminder to variable
+      reminderGroup.add(reminderByGroup['reminder']); 
+    }
+
+    setState(()  {
+      _reminder = reminderByUser['reminder'] ?? [];
+      for (var item in reminderGroup[0]) { // Must set index to 0 because result is list
+
+        http.get(Uri.parse("$api/group/${item['group_id']}"), headers: header).then((value)  {
+          var response = jsonDecode(value.body);
+          
+          setState(() {
+            item['group_name'] = response['group']['name'];
+            _reminder.add(item);
+          });
+        });
+
+        //_reminder.add(item);
+      }
+
+      isLoading = false;
+    });
+
+    //print(_reminder);
+    return _reminder;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isLoggedIn();
+  }
+
+  isLoggedIn() async {
+    final SharedPreferences prefs = await _prefs;
+    if (prefs.getString("access_token") == null) {
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: ((context) => const Login())),
+          (route) => false);
+    } else {
+      setState(() {
+        user = jsonDecode(prefs.getString('user') ?? '{}');
+      });
+      _getReminder();
+    }
+  }
+
+  logout() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.clear();
+    isLoggedIn();
+    //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileButton = Padding(
@@ -59,7 +147,7 @@ class _DashboardState extends State<Dashboard> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
         onPressed: () {
-          Navigator.of(context).pushNamed(Login.tag);
+          logout();
         },
         child: const Text('Log Out'),
       ),
@@ -103,30 +191,67 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
 
+    final spinkit = SpinKitFoldingCube(
+      color: Color(0xff009688),
+      size: 50.0,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text("BURUAN"),
         backgroundColor: Color(0xFF9ED5C5),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'dashboard',
         child: Icon(Icons.add_sharp),
         backgroundColor: Color(0xff009688),
         foregroundColor: Color(0xffffffff),
-        onPressed: () => {Navigator.of(context).pushNamed(Reminder.tag)},
+        onPressed: () => Navigator.of(context).pushNamed(Reminder.tag),
       ),
-      body: Center(
-          child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-        children: <Widget>[reminderCard],
-      )
-          // child: Text("Hello World")
-          ),
+      body: isLoading
+          ? spinkit
+          : ListView.builder(
+              itemCount: _reminder.length,
+              itemBuilder: ((context, index) {
+                return Card(
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  color: const Color(0xFFDEF5E5),
+                  child: ListTile(
+                    isThreeLine: true,
+                    title: Text(_reminder[index]['name']),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_reminder[index]['desc']),
+                        const SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Text(_reminder[index]['group_name'] ?? 'Personal'),
+                            Spacer(),
+                            Text(_reminder[index]['deadline'])
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              })),
       drawer: Drawer(
-        backgroundColor: Color(0xFF9ED5C5),
+        backgroundColor: const Color(0xFF9ED5C5),
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(top: 24.0, right: 24.0, left: 24.0),
           children: <Widget>[
+            DrawerHeader(
+              child: Container(
+                padding: EdgeInsets.all(10),
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  user['name'] ?? '',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
             const SizedBox(height: 8.0),
             profileButton,
             const SizedBox(height: 8.0),
