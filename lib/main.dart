@@ -12,7 +12,7 @@ import 'package:buruan/register.dart';
 import 'package:buruan/dashboard.dart';
 import 'package:buruan/reminder.dart';
 import 'package:buruan/reminderDetail.dart';
-import 'package:buruan/group.dart';
+import 'package:buruan/group/group.dart';
 
 void main() {
   runApp(MyApp());

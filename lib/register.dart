@@ -16,8 +16,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final api =
-      'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
+  final api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
   bool _isLoading = false;
   final Future _prefs = SharedPreferences.getInstance();
 
@@ -32,11 +31,10 @@ class _RegisterState extends State<Register> {
       'email': email,
       'password': password
     };
-    var jsonResponse;
-    var response = await http.post(Uri.parse("$api/register"),
-        body: data); // localhost:8080
+    
+    var response = await http.post(Uri.parse("$api/register"), body: data); // Register API
     if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
+      var jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;

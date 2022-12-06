@@ -3,13 +3,16 @@ import 'package:buruan/login.dart';
 import 'package:buruan/profile.dart';
 import 'package:buruan/reminder.dart';
 import 'package:buruan/reminderDetail.dart';
-import 'package:buruan/group.dart';
+import 'package:buruan/group/group.dart';
 import 'package:buruan/history.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Data
+import 'package:buruan/model/Data.dart';
 
 class Dashboard extends StatefulWidget {
   static String tag = 'dashboard-page';
@@ -26,57 +29,8 @@ class _DashboardState extends State<Dashboard> {
 
   // User Data
   Map user = {};
-  List _reminder = [];
+  List reminder = [];
   bool isLoading = true;
-
-  Future<List> _getReminder() async {
-    final SharedPreferences prefs = await _prefs;
-    Map user = jsonDecode(prefs.getString('user') ?? '{}');
-
-    String token = 'Bearer ${prefs.getString('access_token')}';
-    Map<String, String> header = {'Authorization': token};
-
-    // Get reminder by user id
-    var response = await http.get(Uri.parse("$api/reminder/user/${user['id']}"), headers: header);
-    var reminderByUser = jsonDecode(response.body);
-
-    // Get user membership
-    response = await http.get(Uri.parse("$api/group/user/${user['id']}"), headers: header);
-    var listUserGroup = jsonDecode(response.body);
-
-    // Get reminder by group id
-    List reminderGroup = [];
-    for (var item in listUserGroup['group']) {
-      // Get reminders
-      response = await http.get(Uri.parse("$api/reminder/group/${item['group_id']}"), headers: header);
-      var reminderByGroup = jsonDecode(response.body);
-
-      // Set reminder to variable
-      reminderGroup.add(reminderByGroup['reminder']); 
-    }
-
-    setState(()  {
-      _reminder = reminderByUser['reminder'] ?? [];
-      for (var item in reminderGroup[0]) { // Must set index to 0 because result is list
-
-        http.get(Uri.parse("$api/group/${item['group_id']}"), headers: header).then((value)  {
-          var response = jsonDecode(value.body);
-          
-          setState(() {
-            item['group_name'] = response['group']['name'];
-            _reminder.add(item);
-          });
-        });
-
-        //_reminder.add(item);
-      }
-
-      isLoading = false;
-    });
-
-    //print(_reminder);
-    return _reminder;
-  }
 
   @override
   void initState() {
@@ -93,10 +47,17 @@ class _DashboardState extends State<Dashboard> {
           MaterialPageRoute(builder: ((context) => const Login())),
           (route) => false);
     } else {
+      getReminder(api).then((value) {
+        //print(value);
+        setState(() {
+          reminder = value;
+          isLoading = false;
+        });
+      });
       setState(() {
         user = jsonDecode(prefs.getString('user') ?? '{}');
       });
-      _getReminder();
+      //_getReminder();
     }
   }
 
@@ -109,6 +70,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+
     final profileButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
@@ -191,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
 
-    final spinkit = SpinKitFoldingCube(
+    const spinkit = SpinKitFoldingCube(
       color: Color(0xff009688),
       size: 50.0,
     );
@@ -211,24 +173,24 @@ class _DashboardState extends State<Dashboard> {
       body: isLoading
           ? spinkit
           : ListView.builder(
-              itemCount: _reminder.length,
+              itemCount: reminder.length,
               itemBuilder: ((context, index) {
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   color: const Color(0xFFDEF5E5),
                   child: ListTile(
                     isThreeLine: true,
-                    title: Text(_reminder[index]['name']),
+                    title: Text(reminder[index]['name']),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(_reminder[index]['desc']),
+                        Text(reminder[index]['desc']),
                         const SizedBox(height: 8.0),
                         Row(
                           children: [
-                            Text(_reminder[index]['group_name'] ?? 'Personal'),
+                            Text(reminder[index]['group_name'] ?? 'Personal'),
                             Spacer(),
-                            Text(_reminder[index]['deadline'])
+                            Text(reminder[index]['deadline'])
                           ],
                         )
                       ],
