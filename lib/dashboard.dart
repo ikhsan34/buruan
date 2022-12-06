@@ -7,7 +7,6 @@ import 'package:buruan/group/group.dart';
 import 'package:buruan/history.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -74,8 +73,9 @@ class _DashboardState extends State<Dashboard> {
     final profileButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.of(context).pushNamed(Profile.tag);
         },
         child: const Text('Profile'),
@@ -85,8 +85,9 @@ class _DashboardState extends State<Dashboard> {
     final groupButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.of(context).pushNamed(Group.tag);
         },
         child: const Text('Group'),
@@ -96,8 +97,9 @@ class _DashboardState extends State<Dashboard> {
     final historyButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.of(context).pushNamed(History.tag);
         },
         child: const Text('History'),
@@ -107,7 +109,7 @@ class _DashboardState extends State<Dashboard> {
     final logOutButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF8EC3B0)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
           logout();
         },
@@ -115,43 +117,6 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
 
-    final reminderCard = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: Card(
-        color: Color(0xFFDEF5E5),
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed(ReminderDetail.tag);
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                // leading: Icon(Icons.album),
-                title: Text('Name'),
-                subtitle: Text('Description'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TextButton(
-                    child: const Text('Group Name'),
-                    onPressed: () {/* ... */},
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    child: const Text('Date'),
-                    onPressed: () {/* ... */},
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
 
     const spinkit = SpinKitFoldingCube(
       color: Color(0xff009688),
@@ -160,15 +125,15 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("BURUAN"),
-        backgroundColor: Color(0xFF9ED5C5),
+        title: const Text("Dashboard"),
+        backgroundColor: const Color(0xFF9ED5C5),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'dashboard',
-        child: Icon(Icons.add_sharp),
-        backgroundColor: Color(0xff009688),
-        foregroundColor: Color(0xffffffff),
+        backgroundColor: const Color(0xff009688),
+        foregroundColor: const Color(0xffffffff),
         onPressed: () => Navigator.of(context).pushNamed(Reminder.tag),
+        child: const Icon(Icons.add_sharp),
       ),
       body: isLoading
           ? spinkit
@@ -176,7 +141,7 @@ class _DashboardState extends State<Dashboard> {
               itemCount: reminder.length,
               itemBuilder: ((context, index) {
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   color: const Color(0xFFDEF5E5),
                   child: ListTile(
                     isThreeLine: true,
@@ -189,7 +154,7 @@ class _DashboardState extends State<Dashboard> {
                         Row(
                           children: [
                             Text(reminder[index]['group_name'] ?? 'Personal'),
-                            Spacer(),
+                            const Spacer(),
                             Text(reminder[index]['deadline'])
                           ],
                         )
@@ -206,11 +171,11 @@ class _DashboardState extends State<Dashboard> {
           children: <Widget>[
             DrawerHeader(
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   user['name'] ?? '',
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),

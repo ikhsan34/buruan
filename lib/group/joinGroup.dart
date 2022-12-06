@@ -16,7 +16,7 @@ class _JoinGroupState extends State<JoinGroup> {
       backgroundColor: const Color(0xFFDEF5E5),
       appBar: AppBar(
         backgroundColor: const Color(0xFF9ED5C5),
-        title: const Text('Create Group'),
+        title: const Text('Join Group'),
       ),
     );
   }

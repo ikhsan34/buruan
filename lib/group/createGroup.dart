@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -68,25 +66,30 @@ class _CreateGroupState extends State<CreateGroup> {
         title: const Text('Create Group'),
       ),
       body: isLoading ? spinkit : Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        
         children: [
-          TextFormField(
-            controller: nameController,
-            keyboardType: TextInputType.name,
-            autofocus: false,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: 'name',
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white)),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+            child: TextFormField(
+              controller: nameController,
+              keyboardType: TextInputType.name,
+              autofocus: false,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Group Name',
+                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white)),
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 0),
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
               onPressed: () {
                 //Navigator.of(context).pushNamed(HomePage.tag);
                 setState(() {
@@ -94,7 +97,7 @@ class _CreateGroupState extends State<CreateGroup> {
                 });
                 createGroup(nameController.text);
               },
-              child: const Text('Register'),
+              child: const Text('Create'),
             ),
           )
         ],

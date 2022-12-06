@@ -70,20 +70,15 @@ class _GroupState extends State<Group> {
       size: 50.0,
     );
 
-    var gridView = GridView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 100),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisSpacing: 30,
-        crossAxisSpacing: 30,
-        crossAxisCount: crossAxisCount,
-        childAspectRatio: 3 / 1
-      ),
+    var gridView = ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
       itemCount: group.length,
       itemBuilder: (context, index) {
         return Card(
           color: Colors.white,
-          child: Center(
-            child: Text(group[index]['group_name']),
+          child: ListTile(
+            title: Text(group[index]['group_name']),
+            subtitle: Text('Group Code: ${group[index]['group_id']}'),
           )
         );
       },
