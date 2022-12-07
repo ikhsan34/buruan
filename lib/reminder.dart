@@ -84,8 +84,8 @@ class _ReminderState extends State<Reminder> {
 
     var response = await http.post(Uri.parse("$api/reminder"), body: data, headers: header);
     if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+      // var jsonResponse = json.decode(response.body);
+      // print(jsonResponse);
       setState(() {
         isLoading = false;
         Navigator.of(context).pop();
@@ -94,7 +94,6 @@ class _ReminderState extends State<Reminder> {
       setState(() {
         isLoading = false;
       });
-      print(response.body);
     }
 
   }
@@ -150,7 +149,7 @@ class _ReminderState extends State<Reminder> {
     setState(() {
       this.dateTime = dateTime;
     });
-    print(dateTime);
+    //print(dateTime);
   }
 
   @override
@@ -166,7 +165,7 @@ class _ReminderState extends State<Reminder> {
   @override
   Widget build(BuildContext context) {
 
-    print(selectedGroup);
+    //print(selectedGroup);
 
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
@@ -245,8 +244,8 @@ class _ReminderState extends State<Reminder> {
                 Switch(value: isGroup, onChanged: ((value) {
                   setState(() {
                     isGroup = value;
-                    print(isGroup);
-                    if(value) print(group);
+                    //print(isGroup);
+                    //if(value) print(group);
                   });
                 })),
                 const Text('Insert reminder for group')
@@ -273,7 +272,7 @@ class _ReminderState extends State<Reminder> {
                       setState(() {
                         selectedGroup = value!;
                       });
-                      print(selectedGroup);
+                      //print(selectedGroup);
                     },
                   ),
                 ),

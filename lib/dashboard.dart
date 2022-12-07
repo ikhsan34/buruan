@@ -145,6 +145,7 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: isLoading
           ? spinkit
+          : reminder.isEmpty ? const Center(child: Text("You dont have any reminder, let's create one."),)
           : ListView.builder(
               itemCount: reminder.length,
               itemBuilder: ((context, index) {
@@ -197,58 +198,6 @@ class _DashboardState extends State<Dashboard> {
             logOutButton,
           ],
         ),
-        /*        child: Column(
-          // Important: Remove any padding from the ListView.
-          // padding: EdgeInsets.all(8),
-          children:[
-           Container(
-              height: 50.0,
-              margin: EdgeInsets.all(2),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Color(0xFFFFFFFF),
-                backgroundColor: Color(0xFF8EC3B0),
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(Profile.tag);
-              },
-              child: const Text('Profile'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Color(0xFFFFFFFF),
-                backgroundColor: Color(0xFF8EC3B0),
-              ),
-              onPressed: () {},
-              child: const Text('Group'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Color(0xFFFFFFFF),
-                backgroundColor: Color(0xFF8EC3B0),
-              ),
-              onPressed: () {},
-              child: const Text('History'),
-            ),
-            Expanded(
-              flex: 6,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Color(0xFFFFFFFF),
-                backgroundColor: Color(0xFF8EC3B0),
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(Login.tag);
-              },
-              child: const Text('Log Out'),
-            ), 
-          ], 
-        ),*/
       ),
     );
   }
