@@ -34,17 +34,22 @@ Future<List> getReminder(String api) async {
 
   reminder = reminderByUser['reminder'] ?? [];
 
-  print(reminderGroup);
 
-  if(reminderGroup.isNotEmpty && reminderGroup[0] != null) {
-    for (var item in reminderGroup[0]) { // Must set index to 0 because result is list
-      await http.get(Uri.parse("$api/group/${item['group_id']}"), headers: header).then((value)  {
-        var response = jsonDecode(value.body);
-        item['group_name'] = response['group']['name'];
-        reminder.add(item);
-      });
+  // Group
+  if(reminderGroup.isNotEmpty) {
+    for(var group in reminderGroup) {
+      if(group != null) {
+        for(var item in group) {
+          await http.get(Uri.parse("$api/group/${item['group_id']}"), headers: header).then((value)  {
+            var response = jsonDecode(value.body);
+            item['group_name'] = response['group']['name'];
+            reminder.add(item);
+          });
+        }
+      }
     }
   }
 
+  //print(reminder);
   return reminder;
 }

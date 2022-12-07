@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:buruan/Dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Reminder extends StatefulWidget {
   static String tag = 'Reminder-page';
@@ -10,9 +15,89 @@ class Reminder extends StatefulWidget {
 
 class _ReminderState extends State<Reminder> {
 
+  final Future _prefs = SharedPreferences.getInstance();
+  bool isLoading = false;
+  
 
   DateTime dateTime = DateTime.now();
   bool isGroup = false;
+  List group = [];
+  Object selectedGroup = '';
+  
+  
+  void getGroup() async {
+    // API
+    const api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
+    final SharedPreferences prefs = await _prefs;
+    Map user = jsonDecode(prefs.getString('user') ?? '{}');
+
+    String token = 'Bearer ${prefs.getString('access_token')}';
+    Map<String, String> header = {'Authorization': token};
+
+    var response = await http.get(Uri.parse("$api/group/user/${user['id']}"), headers: header);
+    var result = jsonDecode(response.body)['group'];
+
+    if(result != null) {
+      for (var item in result) { 
+        await http.get(Uri.parse("$api/group/${item['group_id']}"), headers: header).then((value)  {
+          var response = jsonDecode(value.body);
+          item['group_name'] = response['group']['name'];
+        });
+      }
+    }
+    
+    if(mounted) {
+      setState(() {
+        group = result ?? [];
+        isLoading = false;
+        if (group.isNotEmpty) {
+          selectedGroup = group[0]['group_id'];
+        }
+      });
+    }
+
+  }
+
+  // Create Reminder
+  void createReminder(String name, String desc, String deadline, ) async {
+
+    setState(() {
+      isLoading = true;
+    });
+
+    // API
+    const api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
+    final SharedPreferences prefs = await _prefs;
+    Map user = jsonDecode(prefs.getString('user') ?? '{}');
+
+    String token = 'Bearer ${prefs.getString('access_token')}';
+    Map<String, String> header = {'Authorization': token};
+
+    Map data = {
+      if(!isGroup) 'user_id': user['id'],
+      if(isGroup) 'group_id' : selectedGroup,
+      'name': name,
+      'desc': desc,
+      'deadline': deadline
+    };
+
+
+    var response = await http.post(Uri.parse("$api/reminder"), body: data, headers: header);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      setState(() {
+        isLoading = false;
+        Navigator.of(context).pop();
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      print(response.body);
+    }
+
+  }
 
   Future<DateTime?> pickDate() => showDatePicker(
     context: context,
@@ -69,7 +154,19 @@ class _ReminderState extends State<Reminder> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getGroup();
+  }
+
+  final nameController = TextEditingController();
+  final descController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
+
+    print(selectedGroup);
 
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
@@ -89,6 +186,7 @@ class _ReminderState extends State<Reminder> {
             // Title form
             const Text("Title"),
             TextFormField(
+              controller: nameController,
               keyboardType: TextInputType.text,
               autofocus: false,
               decoration: InputDecoration(
@@ -109,6 +207,7 @@ class _ReminderState extends State<Reminder> {
             // Description Form
             const Text("Description"),
             TextFormField(
+              controller: descController,
               keyboardType: TextInputType.text,
               autofocus: false,
               decoration: InputDecoration(
@@ -133,10 +232,10 @@ class _ReminderState extends State<Reminder> {
                 backgroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 15)
               ),
-              child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes', style: TextStyle(color: const Color(0xFF009688)),),
               onPressed: (() {
                 pickDateTime();
               }),
+              child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes', style: const TextStyle(color: Color(0xFF009688)),),
             ),
             const SizedBox(height: 10.0),
 
@@ -147,6 +246,7 @@ class _ReminderState extends State<Reminder> {
                   setState(() {
                     isGroup = value;
                     print(isGroup);
+                    if(value) print(group);
                   });
                 })),
                 const Text('Insert reminder for group')
@@ -155,21 +255,27 @@ class _ReminderState extends State<Reminder> {
             const SizedBox(height: 10.0),
             if(isGroup) Row(
               children: [
-                const Text('Group Code : '),
+                const Text('Select Group : '),
                 const SizedBox(width: 20.0),
-                Expanded(child: 
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                    enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)),
+                Expanded(
+                  child: group.isEmpty ? 
+                  const Text('You dont have any group')
+                  : DropdownButton(
+                    isExpanded: true,
+                    value: selectedGroup,
+                    items: group.map((item) {
+                      return DropdownMenuItem(
+                        value: item['group_id'],
+                        child: Text(item['group_name']),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGroup = value!;
+                      });
+                      print(selectedGroup);
+                    },
                   ),
-                ),
                 ),
               ],
             ),
@@ -180,7 +286,9 @@ class _ReminderState extends State<Reminder> {
               padding: const EdgeInsets.symmetric(vertical: 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-                onPressed: () {},
+                onPressed: () {
+                  createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.day}/${dateTime.month} $hours:$minutes:00');
+                },
                 child: const Text('Submit'),
               ),
             ),

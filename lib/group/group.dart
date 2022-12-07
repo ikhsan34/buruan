@@ -63,8 +63,6 @@ class _GroupState extends State<Group> {
 
     getGroup();
 
-    final int crossAxisCount = group.length < 2 ? 1 : 2;
-
     const spinkit = SpinKitFoldingCube(
       color: Color(0xff009688),
       size: 50.0,

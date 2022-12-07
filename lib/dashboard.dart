@@ -132,7 +132,15 @@ class _DashboardState extends State<Dashboard> {
         heroTag: 'dashboard',
         backgroundColor: const Color(0xff009688),
         foregroundColor: const Color(0xffffffff),
-        onPressed: () => Navigator.of(context).pushNamed(Reminder.tag),
+        onPressed: () => Navigator.of(context).pushNamed(Reminder.tag).then((_) {
+          getReminder(api).then((value) {
+            //print(value);
+            setState(() {
+              reminder = value;
+              isLoading = false;
+            });
+          });
+        }),
         child: const Icon(Icons.add_sharp),
       ),
       body: isLoading
