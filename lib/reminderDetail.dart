@@ -34,7 +34,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white)),
-            suffixIcon: Align(
+            suffixIcon: const Align(
               widthFactor: 1.0,
               heightFactor: 1.0,
               child: Icon(
@@ -58,7 +58,8 @@ class _ReminderDetailState extends State<ReminderDetail> {
     final DeleteButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFF4848)),
+        style:
+            ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF4848)),
         onPressed: () => showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -78,7 +79,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF009688)),
+                    backgroundColor: const Color(0xFF009688)),
                 onPressed: () => Navigator.pop(context, 'ok'),
                 child: const Text('ok'),
               ),
@@ -91,7 +92,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Reminder Detail"),
+        title: const Text("Reminder Detail"),
         backgroundColor: Color(0xFF9ED5C5),
       ),
       backgroundColor: const Color(0xFFDEF5E5),
@@ -100,13 +101,13 @@ class _ReminderDetailState extends State<ReminderDetail> {
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
-            Text("Title"),
+            const Text("Title"),
             title,
             const SizedBox(height: 10.0),
-            Text("Description"),
+            const Text("Description"),
             description,
             const SizedBox(height: 10.0),
-            Text("Deadline"),
+            const Text("Deadline"),
             deadline,
             const SizedBox(height: 48),
             DeleteButton,
