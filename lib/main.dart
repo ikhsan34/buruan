@@ -13,6 +13,7 @@ import 'package:buruan/dashboard.dart';
 import 'package:buruan/reminder.dart';
 import 'package:buruan/reminderDetail.dart';
 import 'package:buruan/group.dart';
+import 'package:buruan/groupDetail.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
     Profile.tag: (context) => const Profile(),
     ReminderDetail.tag: (context) => const ReminderDetail(),
     Group.tag: (context) => const Group(),
+    GroupDetail.tag: (context) => const GroupDetail(),
     History.tag: (context) => const History(),
   };
 
