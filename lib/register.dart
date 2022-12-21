@@ -60,101 +60,12 @@ class _RegisterState extends State<Register> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordControler = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     const logo = Center(
       child: Text("Buruan"),
-    );
-
-    final name = TextFormField(
-      controller: nameController,
-      keyboardType: TextInputType.name,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'name',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final phone = TextFormField(
-      controller: phoneController,
-      keyboardType: TextInputType.phone,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'phone',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final email = TextFormField(
-      controller: emailController,
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Email',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final password = TextFormField(
-      controller: passwordController,
-      autofocus: false,
-      obscureText: true,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Password',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-    final confirmationPassword = TextFormField(
-      controller: confirmPasswordControler,
-      autofocus: false,
-      obscureText: true,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Confirmation Password',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final registerButton = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-        onPressed: () {
-          //Navigator.of(context).pushNamed(HomePage.tag);
-          setState(() {
-            _isLoading = true;
-          });
-          register(nameController.text, phoneController.text,
-              emailController.text, passwordController.text);
-        },
-        child: const Text('Register'),
-      ),
     );
 
     const spinkit = SpinKitFoldingCube(
@@ -163,6 +74,10 @@ class _RegisterState extends State<Register> {
     );
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Register'),
+        backgroundColor: const Color(0xFF9ED5C5),
+      ),
       backgroundColor: const Color(0xFF9ED5C5),
       body: _isLoading ? spinkit : Center(
         child: ListView(
@@ -171,17 +86,112 @@ class _RegisterState extends State<Register> {
           children: <Widget>[
             logo,
             const SizedBox(height: 48.0),
-            name,
-            const SizedBox(height: 8.0),
-            phone,
-            const SizedBox(height: 8.0),
-            email,
-            const SizedBox(height: 8.0),
-            password,
-            const SizedBox(height: 8.0),
-            confirmationPassword,
-            const SizedBox(height: 48),
-            registerButton,
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
+                    controller: nameController,
+                    keyboardType: TextInputType.name,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'name',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone';
+                      }
+                      return null;
+                    },
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'phone',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      return null;
+                    },
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Email',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                    controller: passwordController,
+                    autofocus: false,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Password',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Register Button
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                    _isLoading = true;
+                  });
+                  register(nameController.text, phoneController.text, emailController.text, passwordController.text);
+                  }
+                },
+                child: const Text('Register'),
+              ),
+            ),
           ],
         ),
       ),

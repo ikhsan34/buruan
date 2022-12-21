@@ -54,74 +54,12 @@ class _LoginState extends State<Login> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     const logo = Center(
       child: Text("Buruan!"),
-    );
-
-    final email = TextFormField(
-      controller: emailController,
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Email',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final password = TextFormField(
-      controller: passwordController,
-      autofocus: false,
-      obscureText: true,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Password',
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)),
-      ),
-    );
-
-    final loginButton = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-        onPressed: (() {
-          setState(() {
-            _isLoading = true;
-          });
-          login(emailController.text, passwordController.text);
-        }),
-        child: const Text('Login'),
-      ),
-    );
-
-    final registerButton = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-        onPressed: () {
-          Navigator.of(context).pushNamed(Register.tag);
-        },
-        child: const Text('Register'),
-      ),
-    );
-
-    final forgotLabel = TextButton(
-      child: const Text(
-        'Forgot password?',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {},
     );
 
     const spinkit = SpinKitFoldingCube(
@@ -138,13 +76,89 @@ class _LoginState extends State<Login> {
           children: <Widget>[
             logo,
             const SizedBox(height: 48.0),
-            email,
-            const SizedBox(height: 8.0),
-            password,
-            const SizedBox(height: 24.0),
-            loginButton,
-            registerButton,
-            forgotLabel
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      return null;
+                    },
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Email',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                    controller: passwordController,
+                    autofocus: false,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Password',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  // Login button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                      onPressed: (() {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                          _isLoading = true;
+                          });
+                          login(emailController.text, passwordController.text);
+                        }
+                      }),
+                      child: const Text('Login'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Register button
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Register.tag);
+                },
+                child: const Text('Register'),
+              ),
+            ),
+            TextButton(
+              child: const Text(
+                'Forgot password?',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {},
+            ),
           ],
         ),
       ),

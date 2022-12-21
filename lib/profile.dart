@@ -19,6 +19,7 @@ class _ProfileState extends State<Profile> {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
   void getUserData () async {
@@ -94,62 +95,84 @@ class _ProfileState extends State<Profile> {
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
-            TextFormField(
-              controller: nameController,
-              keyboardType: TextInputType.name,
-              autofocus: false,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Nama',
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
+                    controller: nameController,
+                    keyboardType: TextInputType.name,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Nama',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Nomor Telepon',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  TextFormField(
+                    enabled: false,
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white30,
+                      hintText: 'Email',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          updateProfile(nameController.text, phoneController.text);
+                        }
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 8.0),
-            TextFormField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              autofocus: false,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Nomor Telepon',
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextFormField(
-              enabled: false,
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              autofocus: false,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white30,
-                hintText: 'Email',
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 48),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-                onPressed: () {
-                  updateProfile(nameController.text, phoneController.text);
-                },
-                child: const Text('Save'),
-              ),
-            ),
+            )
           ],
         ),
       ),

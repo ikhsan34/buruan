@@ -66,6 +66,31 @@ class _ReminderDetailState extends State<ReminderDetail> {
 
   }
 
+  void deleteReminder() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    // API
+    const api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
+    final SharedPreferences prefs = await _prefs;
+
+    String token = 'Bearer ${prefs.getString('access_token')}';
+    Map<String, String> header = {'Authorization': token};
+
+    var response = await http.delete(Uri.parse("$api/reminder/$id"), headers: header);
+    if (response.statusCode == 200) {
+      setState(() {
+        isLoading = false;
+        Navigator.of(context).pop();
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   Future<DateTime?> pickDate() => showDatePicker(
     context: context,
     initialDate: dateTime,
@@ -122,6 +147,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
 
   final nameController = TextEditingController();
   final descController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -135,12 +161,6 @@ class _ReminderDetailState extends State<ReminderDetail> {
 
   @override
   Widget build(BuildContext context) {
-
-    //data = ModalRoute.of(context)!.settings.arguments as Map;
-
-    //nameController.text = data['name'];
-    //descController.text = data['desc'];
-    //dateTime = DateTime.parse(data['deadline']);
 
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
@@ -162,71 +182,93 @@ class _ReminderDetailState extends State<ReminderDetail> {
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
 
-            // Title form
-            const Text("Title"),
-            TextFormField(
-              controller: nameController,
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              decoration: InputDecoration(
-                hintText: 'Title',
-                hintStyle: const TextStyle(
-                  color: Colors.grey
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 10.0),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Title form
+                  const Text("Title"),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the title';
+                      }
+                      return null;
+                    },
+                    controller: nameController,
+                    keyboardType: TextInputType.text,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      hintText: 'Title',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
 
-            // Description Form
-            const Text("Description"),
-            TextFormField(
-              controller: descController,
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              decoration: InputDecoration(
-                hintText: 'Description',
-                hintStyle: const TextStyle(
-                  color: Colors.grey
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 10.0),
+                  // Description Form
+                  const Text("Description"),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the description';
+                      }
+                      return null;
+                    },
+                    controller: descController,
+                    keyboardType: TextInputType.text,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      hintText: 'Description',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
 
-            // Deadline form
-            const Text("Deadline"),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 15)
-              ),
-              onPressed: (() {
-                pickDateTime();
-              }),
-              child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes', style: const TextStyle(color: Color(0xFF009688)),),
-            ),
-            const SizedBox(height: 30),
+                  // Deadline form
+                  const Text("Deadline"),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 15)
+                    ),
+                    onPressed: (() {
+                      pickDateTime();
+                    }),
+                    child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes', style: const TextStyle(color: Color(0xFF009688)),),
+                  ),
+                  const SizedBox(height: 30),
 
-            // Submit button
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-                onPressed: () {
-                  updateReminder(id, nameController.text, descController.text, '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes:00');
-                },
-                child: const Text('Submit'),
+                  // Submit button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          updateReminder(id, nameController.text, descController.text, '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes:00');
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -236,7 +278,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                 onPressed: () {
-                  Navigator.pop(context);
+                  deleteReminder();
                 },
                 child: const Text('Delete'),
               ),

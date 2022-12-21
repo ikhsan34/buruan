@@ -50,6 +50,7 @@ class _CreateGroupState extends State<CreateGroup> {
   }
 
   final nameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -67,37 +68,51 @@ class _CreateGroupState extends State<CreateGroup> {
       ),
       body: isLoading ? spinkit : Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-            child: TextFormField(
-              controller: nameController,
-              keyboardType: TextInputType.name,
-              autofocus: false,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Group Name',
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-              onPressed: () {
-                //Navigator.of(context).pushNamed(HomePage.tag);
-                setState(() {
-                  isLoading = true;
-                });
-                createGroup(nameController.text);
-              },
-              child: const Text('Create'),
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a group name';
+                      }
+                      return null;
+                    },
+                    controller: nameController,
+                    keyboardType: TextInputType.name,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Group Name',
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        createGroup(nameController.text);
+                      }
+                    },
+                    child: const Text('Create'),
+                  ),
+                )
+              ],
             ),
           )
         ],

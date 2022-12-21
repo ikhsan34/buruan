@@ -4,7 +4,6 @@
 
 // import 'dart:js';
 
-import 'package:buruan/history.dart';
 import 'package:buruan/login.dart';
 import 'package:buruan/profile.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
     Profile.tag: (context) => const Profile(),
     //ReminderDetail.tag: (context) => const ReminderDetail(id: '',),
     Group.tag: (context) => const Group(),
-    History.tag: (context) => const History(),
+    //History.tag: (context) => const History(),
   };
 
   @override

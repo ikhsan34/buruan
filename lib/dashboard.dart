@@ -107,7 +107,9 @@ class _DashboardState extends State<Dashboard> {
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
           Navigator.of(context).pop();
-          Navigator.of(context).pushNamed(History.tag);
+          Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+            return History(id: user['id']);
+          })));
         },
         child: const Text('History'),
       ),
@@ -156,6 +158,11 @@ class _DashboardState extends State<Dashboard> {
           : ListView.builder(
               itemCount: reminder.length,
               itemBuilder: ((context, index) {
+
+                DateTime dateTime = DateTime.parse(reminder[index]['deadline']);
+                final hours = dateTime.hour.toString().padLeft(2, '0');
+                final minutes = dateTime.minute.toString().padLeft(2, '0');
+
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   color: const Color(0xFFDEF5E5),
@@ -171,7 +178,8 @@ class _DashboardState extends State<Dashboard> {
                           children: [
                             Text(reminder[index]['group_name'] ?? 'Personal'),
                             const Spacer(),
-                            Text(reminder[index]['deadline'])
+                            //Text(reminder[index]['deadline'])
+                            Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes')
                           ],
                         )
                       ],

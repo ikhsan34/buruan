@@ -95,13 +95,13 @@ class _GroupDetailState extends State<GroupDetail> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-              heroTag: 'leave-group',
-              onPressed: () {
-                leaveGroup();
-              },
-              backgroundColor: Colors.redAccent,
-              label: const Text('Leave Group'),
-            ),
+        heroTag: 'leave-group',
+        onPressed: () {
+          leaveGroup();
+        },
+        backgroundColor: Colors.redAccent,
+        label: const Text('Leave Group'),
+      ),
     );
   }
 }

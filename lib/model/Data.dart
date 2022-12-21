@@ -13,6 +13,9 @@ Future<List> getReminder(String api) async {
   String token = 'Bearer ${prefs.getString('access_token')}';
   Map<String, String> header = {'Authorization': token};
 
+  // Pulling history if present
+  await http.get(Uri.parse("$api/history/${user['id']}"), headers: header);
+
   // Get reminder by user id
   var response = await http.get(Uri.parse("$api/reminder/user/${user['id']}"), headers: header);
   var reminderByUser = jsonDecode(response.body);

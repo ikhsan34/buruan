@@ -161,6 +161,7 @@ class _ReminderState extends State<Reminder> {
 
   final nameController = TextEditingController();
   final descController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -186,116 +187,137 @@ class _ReminderState extends State<Reminder> {
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
-
-            // Title form
-            const Text("Title"),
-            TextFormField(
-              controller: nameController,
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              decoration: InputDecoration(
-                hintText: 'Title',
-                hintStyle: const TextStyle(
-                  color: Colors.grey
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-
-            // Description Form
-            const Text("Description"),
-            TextFormField(
-              controller: descController,
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              decoration: InputDecoration(
-                hintText: 'Description',
-                hintStyle: const TextStyle(
-                  color: Colors.grey
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-
-            // Deadline form
-            const Text("Deadline"),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 15)
-              ),
-              onPressed: (() {
-                pickDateTime();
-              }),
-              child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes', style: const TextStyle(color: Color(0xFF009688)),),
-            ),
-            const SizedBox(height: 10.0),
-
-            // Is for group
-            Row(
-              children: [
-                Switch(value: isGroup, onChanged: ((value) {
-                  setState(() {
-                    isGroup = value;
-                    //print(isGroup);
-                    //if(value) print(group);
-                  });
-                })),
-                const Text('Insert reminder for group')
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            if(isGroup) Row(
-              children: [
-                const Text('Select Group : '),
-                const SizedBox(width: 20.0),
-                Expanded(
-                  child: group.isEmpty ? 
-                  const Text('You dont have any group')
-                  : DropdownButton(
-                    isExpanded: true,
-                    value: selectedGroup,
-                    items: group.map((item) {
-                      return DropdownMenuItem(
-                        value: item['group_id'],
-                        child: Text(item['group_name']),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGroup = value!;
-                      });
-                      //print(selectedGroup);
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Title form
+                  const Text("Title"),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the title';
+                      }
+                      return null;
                     },
+                    controller: nameController,
+                    keyboardType: TextInputType.text,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      hintText: 'Title',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
+                  const SizedBox(height: 10.0),
 
-            // Submit button
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
-                onPressed: () {
-                  createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes:00');
-                },
-                child: const Text('Submit'),
+                  // Description Form
+                  const Text("Description"),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the description';
+                      }
+                      return null;
+                    },
+                    controller: descController,
+                    keyboardType: TextInputType.text,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      hintText: 'Description',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  // Deadline form
+                  const Text("Deadline"),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 15)
+                    ),
+                    onPressed: (() {
+                      pickDateTime();
+                    }),
+                    child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year} $hours:$minutes', style: const TextStyle(color: Color(0xFF009688)),),
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  // Is for group
+                  Row(
+                    children: [
+                      Switch(value: isGroup, onChanged: ((value) {
+                        setState(() {
+                          isGroup = value;
+                          //print(isGroup);
+                          //if(value) print(group);
+                        });
+                      })),
+                      const Text('Insert reminder for group')
+                    ],
+                  ),
+                  const SizedBox(height: 10.0),
+                  if(isGroup) Row(
+                    children: [
+                      const Text('Select Group : '),
+                      const SizedBox(width: 20.0),
+                      Expanded(
+                        child: group.isEmpty ? 
+                        const Text('You dont have any group')
+                        : DropdownButton(
+                          isExpanded: true,
+                          value: selectedGroup,
+                          items: group.map((item) {
+                            return DropdownMenuItem(
+                              value: item['group_id'],
+                              child: Text(item['group_name']),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedGroup = value!;
+                            });
+                            //print(selectedGroup);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Submit button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes:00');
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ],
               ),
-            ),
+            )
             
           ],
         ),
