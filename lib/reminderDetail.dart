@@ -1,66 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ReminderDetail extends StatefulWidget {
   static String tag = 'ReminderDetail-page';
-  const ReminderDetail({super.key});
+
+  final String id;
+  final String title;
+  final String desc;
+  final String deadline;
+
+  const ReminderDetail({required this.id, super.key, required this.title, required this.desc, required this.deadline});
 
   @override
   State<ReminderDetail> createState() => _ReminderDetailState();
 }
 
 class _ReminderDetailState extends State<ReminderDetail> {
-  
 
   final Future _prefs = SharedPreferences.getInstance();
   bool isLoading = false;
-  
 
   DateTime dateTime = DateTime.now();
   bool isGroup = false;
   List group = [];
   Object selectedGroup = '';
-  
-  
-  void getGroup() async {
-    // API
-    const api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
-    final SharedPreferences prefs = await _prefs;
-    Map user = jsonDecode(prefs.getString('user') ?? '{}');
+  late String id;
 
-    String token = 'Bearer ${prefs.getString('access_token')}';
-    Map<String, String> header = {'Authorization': token};
 
-    var response = await http.get(Uri.parse("$api/group/user/${user['id']}"), headers: header);
-    var result = jsonDecode(response.body)['group'];
-
-    if(result != null) {
-      for (var item in result) { 
-        await http.get(Uri.parse("$api/group/${item['group_id']}"), headers: header).then((value)  {
-          var response = jsonDecode(value.body);
-          item['group_name'] = response['group']['name'];
-        });
-      }
-    }
-    
-    if(mounted) {
-      setState(() {
-        group = result ?? [];
-        isLoading = false;
-        if (group.isNotEmpty) {
-          selectedGroup = group[0]['group_id'];
-        }
-      });
-    }
-
-  }
-
-  // Create Reminder
-  void createReminder(String name, String desc, String deadline, ) async {
+  // Update Reminder
+  void updateReminder(String id, String name, String desc, String deadline) async {
 
     setState(() {
       isLoading = true;
@@ -69,7 +39,6 @@ class _ReminderDetailState extends State<ReminderDetail> {
     // API
     const api = 'http://ec2-13-250-57-227.ap-southeast-1.compute.amazonaws.com:5000';
     final SharedPreferences prefs = await _prefs;
-    Map user = jsonDecode(prefs.getString('user') ?? '{}');
 
     String token = 'Bearer ${prefs.getString('access_token')}';
     Map<String, String> header = {'Authorization': token};
@@ -81,7 +50,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
     };
 
 
-    var response = await http.post(Uri.parse("$api/reminder"), body: data, headers: header);
+    var response = await http.put(Uri.parse("$api/reminder/$id"), body: data, headers: header);
     if (response.statusCode == 200) {
       // var jsonResponse = json.decode(response.body);
       // print(jsonResponse);
@@ -100,7 +69,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
   Future<DateTime?> pickDate() => showDatePicker(
     context: context,
     initialDate: dateTime,
-    firstDate: DateTime.now(),
+    firstDate: dateTime,
     lastDate: DateTime(2100),
     builder: (context, child) {
       return Theme(
@@ -151,23 +120,35 @@ class _ReminderDetailState extends State<ReminderDetail> {
     //print(dateTime);
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getGroup();
-  }
-
   final nameController = TextEditingController();
   final descController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    id = widget.id;
+    nameController.text = widget.title;
+    descController.text = widget.desc;
+    dateTime = DateTime.parse(widget.deadline);
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-    //print(selectedGroup);
+    //data = ModalRoute.of(context)!.settings.arguments as Map;
+
+    //nameController.text = data['name'];
+    //descController.text = data['desc'];
+    //dateTime = DateTime.parse(data['deadline']);
 
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
+
+    const spinkit = SpinKitFoldingCube(
+      color: Color(0xff009688),
+      size: 50.0,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -175,7 +156,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
         backgroundColor: const Color(0xFF9ED5C5),
       ),
       backgroundColor: const Color(0xFFDEF5E5),
-      body: Center(
+      body: isLoading ? spinkit : Center(
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
@@ -228,7 +209,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 15)
+                padding: const EdgeInsets.symmetric(vertical: 15)
               ),
               onPressed: (() {
                 pickDateTime();
@@ -243,7 +224,7 @@ class _ReminderDetailState extends State<ReminderDetail> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
                 onPressed: () {
-                  createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.day}/${dateTime.month} $hours:$minutes:00');
+                  updateReminder(id, nameController.text, descController.text, '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes:00');
                 },
                 child: const Text('Submit'),
               ),
@@ -255,7 +236,8 @@ class _ReminderDetailState extends State<ReminderDetail> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                 onPressed: () {
-                  createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.day}/${dateTime.month} $hours:$minutes:00');
+                  print('delete button');
+                  Navigator.pop(context);
                 },
                 child: const Text('Delete'),
               ),

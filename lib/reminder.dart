@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:buruan/Dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -59,7 +60,7 @@ class _ReminderState extends State<Reminder> {
   }
 
   // Create Reminder
-  void createReminder(String name, String desc, String deadline, ) async {
+  void createReminder(String name, String desc, String deadline) async {
 
     setState(() {
       isLoading = true;
@@ -170,13 +171,18 @@ class _ReminderState extends State<Reminder> {
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
 
+    const spinkit = SpinKitFoldingCube(
+      color: Color(0xff009688),
+      size: 50.0,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Reminder"),
         backgroundColor: const Color(0xFF9ED5C5),
       ),
       backgroundColor: const Color(0xFFDEF5E5),
-      body: Center(
+      body: isLoading ? spinkit : Center(
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 24.0, right: 24.0),
@@ -286,7 +292,7 @@ class _ReminderState extends State<Reminder> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
                 onPressed: () {
-                  createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.day}/${dateTime.month} $hours:$minutes:00');
+                  createReminder(nameController.text, descController.text, '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes:00');
                 },
                 child: const Text('Submit'),
               ),

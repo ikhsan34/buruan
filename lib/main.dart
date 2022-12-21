@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     Dashboard.tag: (context) => const Dashboard(),
     Reminder.tag: (context) => const Reminder(),
     Profile.tag: (context) => const Profile(),
-    ReminderDetail.tag: (context) => const ReminderDetail(),
+    //ReminderDetail.tag: (context) => const ReminderDetail(id: '',),
     Group.tag: (context) => const Group(),
     History.tag: (context) => const History(),
   };

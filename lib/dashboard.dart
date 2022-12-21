@@ -169,9 +169,33 @@ class _DashboardState extends State<Dashboard> {
                         )
                       ],
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ReminderDetail(),));
-                    },
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: ((context) {
+                      return ReminderDetail(id: reminder[index]['id'], title: reminder[index]['name'], desc: reminder[index]['desc'], deadline: reminder[index]['deadline']);
+                    }))).then((_) {
+                      getReminder(api).then((value) {
+                      //print(value);
+                      setState(() {
+                        reminder = value;
+                        isLoading = false;
+                      });
+                    });
+                    }),
+                    // onTap: () {
+                    //   Navigator.pushNamed(context, 'ReminderDetail-page', arguments: {
+                    //     'id': reminder[index]['id'],
+                    //     'name': reminder[index]['name'],
+                    //     'desc': reminder[index]['desc'],
+                    //     'deadline': reminder[index]['deadline']
+                    //   }).then((_) {
+                    //     getReminder(api).then((value) {
+                    //     //print(value);
+                    //     setState(() {
+                    //       reminder = value;
+                    //       isLoading = false;
+                    //     });
+                    //   });
+                    //   });
+                    // },
                   ),
                 );
               })),
