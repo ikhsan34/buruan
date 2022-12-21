@@ -38,14 +38,14 @@ class _CreateGroupState extends State<CreateGroup> {
     var response = await http.post(Uri.parse('$api/group'), body: data, headers: header);
     
     if(response.statusCode == 200) {
-      var result = jsonDecode(response.body);
-      print(result);
+      // var result = jsonDecode(response.body);
+      // print(result);
       setState(() {
         isLoading = false;
         Navigator.of(context).pop();
       });
     }
-    print(response.statusCode);
+    //print(response.statusCode);
 
   }
 

@@ -40,9 +40,10 @@ class _RegisterState extends State<Register> {
           _isLoading = false;
         });
         prefs.setString("access_token", jsonResponse['access_token']);
+        if (!mounted) return;
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => Dashboard(),
+              builder: (context) => const Dashboard(),
             ),
             (route) => false);
       }
@@ -50,7 +51,7 @@ class _RegisterState extends State<Register> {
       setState(() {
         _isLoading = false;
       });
-      print(response.body);
+      //print(response.body);
     }
   }
 
@@ -143,7 +144,7 @@ class _RegisterState extends State<Register> {
     final registerButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
         onPressed: () {
           //Navigator.of(context).pushNamed(HomePage.tag);
           setState(() {
@@ -156,7 +157,7 @@ class _RegisterState extends State<Register> {
       ),
     );
 
-    final spinkit = SpinKitFoldingCube(
+    const spinkit = SpinKitFoldingCube(
       color: Color(0xff009688),
       size: 50.0,
     );

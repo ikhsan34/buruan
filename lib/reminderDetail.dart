@@ -236,7 +236,6 @@ class _ReminderDetailState extends State<ReminderDetail> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                 onPressed: () {
-                  print('delete button');
                   Navigator.pop(context);
                 },
                 child: const Text('Delete'),

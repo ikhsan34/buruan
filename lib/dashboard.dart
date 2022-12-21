@@ -76,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
           Navigator.of(context).pop();
-          Navigator.of(context).pushNamed(Profile.tag);
+          Navigator.of(context).pushNamed(Profile.tag).then((_) => isLoggedIn());
         },
         child: const Text('Profile'),
       ),
@@ -180,22 +180,6 @@ class _DashboardState extends State<Dashboard> {
                       });
                     });
                     }),
-                    // onTap: () {
-                    //   Navigator.pushNamed(context, 'ReminderDetail-page', arguments: {
-                    //     'id': reminder[index]['id'],
-                    //     'name': reminder[index]['name'],
-                    //     'desc': reminder[index]['desc'],
-                    //     'deadline': reminder[index]['deadline']
-                    //   }).then((_) {
-                    //     getReminder(api).then((value) {
-                    //     //print(value);
-                    //     setState(() {
-                    //       reminder = value;
-                    //       isLoading = false;
-                    //     });
-                    //   });
-                    //   });
-                    // },
                   ),
                 );
               })),

@@ -20,8 +20,8 @@ Future<List> getReminder(String api) async {
   // Get user membership
   response = await http.get(Uri.parse("$api/group/user/${user['id']}"), headers: header);
   var listUserGroup = jsonDecode(response.body);
-  print(listUserGroup);
-  print(listUserGroup.isEmpty);
+  // print(listUserGroup);
+  // print(listUserGroup.isEmpty);
 
   // Get reminder by group id
   List reminderGroup = [];

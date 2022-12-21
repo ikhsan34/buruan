@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:buruan/Dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -235,7 +234,7 @@ class _ReminderState extends State<Reminder> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 15)
+                padding: const EdgeInsets.symmetric(vertical: 15)
               ),
               onPressed: (() {
                 pickDateTime();

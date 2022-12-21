@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
         if (!mounted) return;
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => Dashboard(),
+              builder: (context) => const Dashboard(),
             ),
             (route) => false);
       }
@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
       setState(() {
         _isLoading = false;
       });
-      print(response.body);
+      //print(response.body);
     }
   }
 
@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
     final loginButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
         onPressed: (() {
           setState(() {
             _isLoading = true;
@@ -108,7 +108,7 @@ class _LoginState extends State<Login> {
     final registerButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF009688)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF009688)),
         onPressed: () {
           Navigator.of(context).pushNamed(Register.tag);
         },
@@ -124,7 +124,7 @@ class _LoginState extends State<Login> {
       onPressed: () {},
     );
 
-    final spinkit = SpinKitFoldingCube(
+    const spinkit = SpinKitFoldingCube(
       color: Color(0xff009688),
       size: 50.0,
     );
