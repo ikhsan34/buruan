@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.upi.buruan">
+    package="com.example.buruan">
+    <uses-permission android:name="android.permission.INTERNET"/> <!-- Internet Permission -->
    <application
         android:label="buruan"
         android:name="${applicationName}"
@@ -31,5 +32,4 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
