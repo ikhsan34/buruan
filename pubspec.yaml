@@ -38,6 +38,7 @@ dependencies:
   http: any
   shared_preferences: any
   flutter_spinkit: any
+  fluttertoast: ^8.1.2
 
 dev_dependencies:
   flutter_test:

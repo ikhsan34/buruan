@@ -88,7 +88,14 @@ class _DashboardState extends State<Dashboard> {
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8EC3B0)),
         onPressed: () {
           Navigator.of(context).pop();
-          Navigator.of(context).pushNamed(Group.tag);
+          Navigator.of(context).pushNamed(Group.tag).then((_){
+            getReminder(api).then((value){
+              setState(() {
+                reminder = value;
+                isLoading = false;
+              });
+            });
+          });
         },
         child: const Text('Group'),
       ),
