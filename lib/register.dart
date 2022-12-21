@@ -1,3 +1,4 @@
+import 'package:buruan/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,11 +40,11 @@ class _RegisterState extends State<Register> {
         setState(() {
           _isLoading = false;
         });
-        prefs.setString("access_token", jsonResponse['access_token']);
+        //prefs.setString("access_token", jsonResponse['access_token']);
         if (!mounted) return;
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => const Dashboard(),
+              builder: (context) => const Login(),
             ),
             (route) => false);
       }
